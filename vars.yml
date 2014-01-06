@@ -1,4 +1,9 @@
 # Variables to control the provisioning process.
 ---
 username: ash
+home: /home/{{ username }}
 ruby_version: 2.1.0
+rbenv_root: {{ home }}/.rbenv
+rbenv_env:
+  RBENV_ROOT: "{{ rbenv_root }}"
+  PATH: "{{ ansible_env.PATH }}:{{ rbenv_root }}/shims:{{ rbenv_root }}/bin"

@@ -1,0 +1,46 @@
+# Install ruby by way of rbenv.
+---
+- name: install apt prerequisites
+  apt: pkg={{ item }} state=installed
+  with_items:
+  - autoconf
+  - libssl-dev
+  - libreadline6
+  - libreadline6-dev
+  - zlib1g
+  - zlib1g-dev
+
+- name: install rbenv
+  git: repo=https://github.com/sstephenson/rbenv.git
+       dest={{ rbenv_root }}
+  sudo: yes
+  sudo_user: "{{ username }}"
+
+- name: install ruby-build
+  git: repo=https://github.com/sstephenson/ruby-build.git
+       dest={{ rbenv_root }}/plugins/ruby-build
+  sudo: yes
+  sudo_user: "{{ username }}"
+
+- name: install a gemrc
+  copy: src=files/gemrc dest={{ home }}/.gemrc
+        owner={{ username }} group={{ username }} mode=0644
+
+- name: build ruby {{ ruby_version }}
+  shell: rbenv install {{ ruby_version }}
+         creates={{ rbenv_root }}/versions/{{ ruby_version }}/bin/ruby
+  sudo: yes
+  sudo_user: "{{ username }}"
+  environment: rbenv_env
+
+- name: set the global ruby version to {{ ruby_version }}
+  shell: rbenv global {{ ruby_version }}
+  sudo: yes
+  sudo_user: "{{ username }}"
+  environment: rbenv_env
+
+- name: rehash to pick up changes
+  shell: rbenv rehash
+  sudo: yes
+  sudo_user: "{{ username }}"
+  environment: rbenv_env
