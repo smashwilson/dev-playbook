@@ -29,3 +29,14 @@
 
 - name: install the sudoers file
   shell: visudo -q -c -f /tmp/sudoers.tmp && cp -f /tmp/sudoers.tmp /etc/sudoers
+
+- name: core apt stuff that should always be there
+  apt: pkg={{ item }} state=installed
+  with_items:
+  - build-essential
+  - libyaml-0-2
+  - libyaml-dev
+  - git
+  - vim
+  - curl
+  - wget
