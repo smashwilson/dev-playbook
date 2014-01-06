@@ -1,0 +1,24 @@
+# Install my dotfiles.
+---
+- name: clone my dotfiles repo.
+  git: repo=https://github.com/smashwilson/dotfiles.git
+       dest=~{{ username }}/.dotfiles
+  sudo: yes
+  sudo_user: "{{ username }}"
+
+- name: register my git author name
+  local_command: git config --global user.name
+  register: git_name
+
+- name: register my git email
+  local_command: git config --global user.email
+  register: git_email
+
+- name: generate the gitconfig template
+  template: src=templates/gitconfig.j2 dest=~/.dotfiles/gitconfig.symlink
+            owner={{ username }} group={{ username }} mode=0644
+
+- name: install the symlinks.
+  command: chdir=~{{ username }}/.dotfiles script/bootstrap
+  sudo: yes
+  sudo_user: "{{ username }}"
