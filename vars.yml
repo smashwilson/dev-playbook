@@ -1,0 +1,4 @@
+# Variables to control the provisioning process.
+---
+username: ash
+ruby_version: 2.1.0

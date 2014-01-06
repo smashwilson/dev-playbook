@@ -1,0 +1,31 @@
+# Create a user account on the target machine.
+---
+- name: ensure a sudo group exists
+  group: name=sudo state=present
+
+- name: ensure my account is created
+  user: name={{ username }} state=present
+        shell=/bin/bash append=true groups=sudo
+
+- name: install my public key
+  authorized_key: user={{ username }} state=present
+                  key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+# Set up the sudoers file, using visudo to validate.
+# Enable passwordless sudo because (a) we're authenticating with keys so we don't have a password
+# and (b) it's helpful for further automation.
+
+- name: copy the existing sudoers file.
+  command: cp -f /etc/sudoers /tmp/sudoers.tmp
+
+- name: ensure users in the sudo group can sudo passwordless
+  lineinfile: dest=/tmp/sudoers.tmp state=present
+              regexp='^%sudo' line='%sudo ALL=(ALL) NOPASSWD: ALL'
+
+- name: pass ssh-agent through sudo
+  lineinfile: dest=/tmp/sudoers.tmp state=present
+              regexp='^Defaults env_keep\+\=SSH_AUTH_SOCK'
+              line='Defaults env_keep+=SSH_AUTH_SOCK'
+
+- name: install the sudoers file
+  shell: visudo -q -c -f /tmp/sudoers.tmp && cp -f /tmp/sudoers.tmp /etc/sudoers
