@@ -2,23 +2,29 @@
 ---
 - name: clone my dotfiles repo.
   git: repo=https://github.com/smashwilson/dotfiles.git
-       dest=~{{ username }}/.dotfiles
+       dest={{ home }}/.dotfiles
   sudo: yes
   sudo_user: "{{ username }}"
 
+- name: add an ssh remote
+  copy: src=files/dotfiles-gitconfig dest={{ home }}/.dotfiles/.git/config
+        owner={{ username }} group={{ username }} mode=0644
+
 - name: register my git author name
-  local_command: git config --global user.name
+  local_action: command git config --global user.name
   register: git_name
 
 - name: register my git email
-  local_command: git config --global user.email
+  local_action: command git config --global user.email
   register: git_email
 
 - name: generate the gitconfig template
-  template: src=templates/gitconfig.j2 dest=~/.dotfiles/gitconfig.symlink
+  template: src=templates/gitconfig.j2 dest={{ home }}/.dotfiles/git/gitconfig.symlink
             owner={{ username }} group={{ username }} mode=0644
 
 - name: install the symlinks.
-  command: chdir=~{{ username }}/.dotfiles script/bootstrap
+  command: chdir={{ home }}/.dotfiles script/bootstrap
   sudo: yes
   sudo_user: "{{ username }}"
+  environment:
+    OVERWRITE_ALL: true

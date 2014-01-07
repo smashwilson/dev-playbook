@@ -27,20 +27,23 @@
         owner={{ username }} group={{ username }} mode=0644
 
 - name: build ruby {{ ruby_version }}
-  shell: rbenv install {{ ruby_version }}
-         creates={{ rbenv_root }}/versions/{{ ruby_version }}/bin/ruby
+  command: chdir={{ home }}
+           rbenv install {{ ruby_version }}
+           creates={{ rbenv_root }}/versions/{{ ruby_version }}/bin/ruby
   sudo: yes
   sudo_user: "{{ username }}"
   environment: rbenv_env
 
 - name: set the global ruby version to {{ ruby_version }}
-  shell: rbenv global {{ ruby_version }}
+  command: chdir={{ home }}
+           rbenv global {{ ruby_version }}
   sudo: yes
   sudo_user: "{{ username }}"
   environment: rbenv_env
 
 - name: rehash to pick up changes
-  shell: rbenv rehash
+  command: chdir={{ home }}
+           rbenv rehash
   sudo: yes
   sudo_user: "{{ username }}"
   environment: rbenv_env

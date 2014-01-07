@@ -11,24 +11,24 @@
   authorized_key: user={{ username }} state=present
                   key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
+- name: synchronize the known_hosts file.
+  copy: src=~/.ssh/known_hosts dest={{ home }}/.ssh/known_hosts
+        owner={{ username }} group={{ username }} mode=0644
+
 # Set up the sudoers file, using visudo to validate.
 # Enable passwordless sudo because (a) we're authenticating with keys so we don't have a password
 # and (b) it's helpful for further automation.
 
-- name: copy the existing sudoers file.
-  command: cp -f /etc/sudoers /tmp/sudoers.tmp
-
 - name: ensure users in the sudo group can sudo passwordless
-  lineinfile: dest=/tmp/sudoers.tmp state=present
-              regexp='^%sudo' line='%sudo ALL=(ALL) NOPASSWD: ALL'
+  lineinfile: "dest=/etc/sudoers state=present
+               regexp='^%sudo' line='%sudo ALL=(ALL) NOPASSWD: ALL'
+               validate='visudo -cf %s'"
 
-- name: pass ssh-agent through sudo
-  lineinfile: dest=/tmp/sudoers.tmp state=present
+- name: ensure ssh-agent works through sudo
+  lineinfile: dest=/etc/sudoers state=present
               regexp='^Defaults env_keep\+\=SSH_AUTH_SOCK'
               line='Defaults env_keep+=SSH_AUTH_SOCK'
-
-- name: install the sudoers file
-  shell: visudo -q -c -f /tmp/sudoers.tmp && cp -f /tmp/sudoers.tmp /etc/sudoers
+              validate='visudo -cf %s'
 
 - name: core apt stuff that should always be there
   apt: pkg={{ item }} state=installed
