@@ -27,4 +27,4 @@
   sudo: yes
   sudo_user: "{{ username }}"
   environment:
-    OVERWRITE_ALL: true
+    OVERWRITE_ALL: "true"

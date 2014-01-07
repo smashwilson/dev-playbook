@@ -5,10 +5,10 @@
   - vars.yml
   tasks:
 
-  - include: account.yml
+  - include: account.yml tags=account
 
-  - include: dotfiles.yml
+  - include: dotfiles.yml tags=account
 
-  - include: ruby.yml
+  - include: ruby.yml tags=software,ruby
 
-  - include: python.yml
+  - include: python.yml tags=software,python
