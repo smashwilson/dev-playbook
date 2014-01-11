@@ -12,3 +12,7 @@
   - include: ruby.yml tags=software,ruby
 
   - include: python.yml tags=software,python
+
+  - include: node.yml tags=software,node
+
+  - include: go.yml tags=software,go

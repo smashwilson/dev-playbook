@@ -1,9 +1,18 @@
 # Variables to control the provisioning process.
 ---
 username: ash
-home: /home/{{ username }}
 ruby_version: 2.1.0
+go_version: 1.2
+go_arch: linux-amd64
+
+# Variables you probably don't need to change often.
+home: /home/{{ username }}
 rbenv_root: "{{ home }}/.rbenv"
 rbenv_env:
   RBENV_ROOT: "{{ rbenv_root }}"
   PATH: "{{ ansible_env.PATH }}:{{ rbenv_root }}/shims:{{ rbenv_root }}/bin"
+go_file: go{{ go_version }}.{{ go_arch }}.tar.gz
+go_root: /usr/local/go
+go_url: https://go.googlecode.com/files/{{ go_file }}
+go_archive_dir: "{{ go_root }}/archive"
+go_archive_path: "{{ go_archive_dir }}/{{ go_file }}"
