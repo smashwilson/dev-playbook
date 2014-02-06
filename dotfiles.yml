@@ -1,13 +1,13 @@
 # Install my dotfiles.
 ---
 - name: clone my dotfiles repo.
-  git: repo=https://github.com/smashwilson/dotfiles.git
+  git: repo=https://github.com/{{ github_user }}/dotfiles.git
        dest={{ home }}/.dotfiles
   sudo: yes
   sudo_user: "{{ username }}"
 
 - name: add an ssh remote
-  copy: src=files/dotfiles-gitconfig dest={{ home }}/.dotfiles/.git/config
+  template: src=templates/dotfiles-gitconfig dest={{ home }}/.dotfiles/.git/config
         owner={{ username }} group={{ username }} mode=0644
 
 - name: register my git author name
