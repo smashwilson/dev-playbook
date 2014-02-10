@@ -4,11 +4,11 @@
   bare = false
   logallrefupdates = true
 [remote "origin"]
-  url = https://github.com/smashwilson/dotfiles.git
+  url = https://github.com/{{ github_user }}/dotfiles.git
   fetch = +refs/heads/*:refs/remotes/origin/*
 [branch "master"]
   remote = ssh
   merge = refs/heads/master
 [remote "ssh"]
-  url = git@github.com:smashwilson/dotfiles.git
+  url = git@github.com:{{ github_user }}/dotfiles.git
   fetch = +refs/heads/*:refs/remotes/ssh/*

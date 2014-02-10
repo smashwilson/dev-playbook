@@ -1,6 +1,7 @@
 # Variables to control the provisioning process.
 ---
 username: ash
+github_user: smashwilson
 ruby_version: 2.1.0
 go_version: 1.2
 go_arch: linux-amd64
