@@ -1,30 +1,24 @@
 # Install my dotfiles.
 ---
-- name: clone my dotfiles repo.
-  git: repo=https://github.com/{{ github_user }}/dotfiles.git
-       dest={{ home }}/.dotfiles
-  sudo: yes
-  sudo_user: "{{ username }}"
+- hosts: all
+  vars_files:
+  - vars.yml
+  remote_user: "{{ username }}"
+  tasks:
 
-- name: add an ssh remote
-  template: src=templates/dotfiles-gitconfig dest={{ home }}/.dotfiles/.git/config
-        owner={{ username }} group={{ username }} mode=0644
+  - name: clone my dotfiles repo.
+    git: repo=https://github.com/{{ github_user }}/dotfiles.git
+         dest={{ home }}/.dotfiles
 
-- name: register my git author name
-  local_action: command git config --global user.name
-  register: git_name
+  - name: add an ssh remote
+    template: src=templates/dotfiles-gitconfig dest={{ home }}/.dotfiles/.git/config
+              mode=0644
 
-- name: register my git email
-  local_action: command git config --global user.email
-  register: git_email
+  - name: generate the gitconfig template
+    template: src=templates/gitconfig.j2 dest={{ home }}/.dotfiles/git/gitconfig.symlink
+              mode=0644
 
-- name: generate the gitconfig template
-  template: src=templates/gitconfig.j2 dest={{ home }}/.dotfiles/git/gitconfig.symlink
-            owner={{ username }} group={{ username }} mode=0644
-
-- name: install the symlinks.
-  command: chdir={{ home }}/.dotfiles script/bootstrap
-  sudo: yes
-  sudo_user: "{{ username }}"
-  environment:
-    OVERWRITE_ALL: "true"
+  - name: install the symlinks.
+    command: chdir={{ home }}/.dotfiles script/bootstrap
+    environment:
+      OVERWRITE_ALL: "true"

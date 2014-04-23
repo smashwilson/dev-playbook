@@ -1,35 +1,41 @@
 # Install a node.js runtime and npm, with nave.
 ---
-- name: take ownership of the directories that node uses
-  file: path={{ item }} state=directory
-        owner={{ username }} group={{ username }} mode=0755
-  with_items:
-  - /usr/local/share/man
-  - /usr/local/bin
-  - /usr/local/lib/node_modules
-  - /usr/local/include/node
+- hosts: all
+  vars_files:
+  - vars.yml
+  remote_user: root
+  tasks:
 
-- name: ensure that there's a directory for nave to live in.
-  file: path={{ home }}/.nave state=directory
-        owner={{ username }} group={{ username }} mode=0755
+  - name: take ownership of the directories that node uses
+    file: path={{ item }} state=directory
+          owner={{ username }} group={{ username }} mode=0755
+    with_items:
+    - /usr/local/share/man
+    - /usr/local/bin
+    - /usr/local/lib/node_modules
+    - /usr/local/include/node
 
-- name: fetch the nave script.
-  command: wget http://github.com/isaacs/nave/raw/master/nave.sh -O {{ home }}/.nave/nave.sh
-           creates={{ home }}/.nave/nave.sh
-  sudo: yes
-  sudo_user: "{{ username }}"
+- hosts: all
+  vars_files:
+  - vars.yml
+  remote_user: "{{ username }}"
+  tasks:
 
-- name: symlink nave into /usr/local/bin.
-  file: path=/usr/local/bin/nave src={{ home }}/.nave/nave.sh state=link
-        owner={{ username }} group={{ username }} mode=0755
+  - name: ensure that there's a directory for nave to live in.
+    file: path={{ home }}/.nave state=directory
+          owner={{ username }} group={{ username }} mode=0755
 
-- name: install the latest stable node.js release.
-  command: nave usemain stable
-  sudo: yes
-  sudo_user: "{{ username }}"
+  - name: fetch the nave script.
+    command: wget http://github.com/isaacs/nave/raw/master/nave.sh -O {{ home }}/.nave/nave.sh
+             creates={{ home }}/.nave/nave.sh
 
-- name: install npm
-  shell: curl https://npmjs.org/install.sh | sh
-         creates=/usr/local/lib/node_modules/npm/bin/npm-cli.js
-  sudo: yes
-  sudo_user: "{{ username }}"
+  - name: symlink nave into /usr/local/bin.
+    file: path=/usr/local/bin/nave src={{ home }}/.nave/nave.sh state=link
+          owner={{ username }} group={{ username }} mode=0755
+
+  - name: install the latest stable node.js release.
+    command: nave usemain stable
+
+  - name: install npm
+    shell: curl https://npmjs.org/install.sh | sh
+           creates=/usr/local/lib/node_modules/npm/bin/npm-cli.js

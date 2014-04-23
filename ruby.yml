@@ -1,49 +1,55 @@
 # Install ruby by way of rbenv.
 ---
-- name: install apt prerequisites
-  apt: pkg={{ item }} state=installed
-  with_items:
-  - autoconf
-  - libssl-dev
-  - libreadline6
-  - libreadline6-dev
-  - zlib1g
-  - zlib1g-dev
+- hosts: all
+  vars_files:
+  - vars.yml
+  remote_user: root
+  tasks:
 
-- name: install rbenv
-  git: repo=https://github.com/sstephenson/rbenv.git
-       dest={{ rbenv_root }}
-  sudo: yes
-  sudo_user: "{{ username }}"
+  - name: install apt prerequisites
+    apt: pkg={{ item }} state=installed
+    with_items:
+    - build-essential
+    - libssl-dev
+    - libreadline-dev
+    - libyaml-dev
+    - libsqlite3-dev
+    - sqlite3
+    - libxml2-dev
+    - libxslt1-dev
+    - zlib1g-dev
 
-- name: install ruby-build
-  git: repo=https://github.com/sstephenson/ruby-build.git
-       dest={{ rbenv_root }}/plugins/ruby-build
-  sudo: yes
-  sudo_user: "{{ username }}"
+- hosts: all
+  vars_files:
+  - vars.yml
+  remote_user: "{{ username }}"
+  tasks:
 
-- name: install a gemrc
-  copy: src=files/gemrc dest={{ home }}/.gemrc
-        owner={{ username }} group={{ username }} mode=0644
+  - name: install rbenv
+    git: repo=https://github.com/sstephenson/rbenv.git
+         dest={{ rbenv_root }}
 
-- name: build ruby {{ ruby_version }}
-  command: chdir={{ home }}
-           rbenv install {{ ruby_version }}
+  - name: install ruby-build
+    git: repo=https://github.com/sstephenson/ruby-build.git
+         dest={{ rbenv_root }}/plugins/ruby-build
+
+  - name: install a gemrc
+    copy: src=files/gemrc dest={{ home }}/.gemrc
+          owner={{ username }} group={{ username }} mode=0644
+
+  - name: build ruby {{ ruby_version }}
+    shell: chdir={{ home }}
+           curl -fsSL https://gist.github.com/mislav/a18b9d7f0dc5b9efc162.txt |
+           rbenv install --patch {{ ruby_version }}
            creates={{ rbenv_root }}/versions/{{ ruby_version }}/bin/ruby
-  sudo: yes
-  sudo_user: "{{ username }}"
-  environment: rbenv_env
+    environment: rbenv_env
 
-- name: set the global ruby version to {{ ruby_version }}
-  command: chdir={{ home }}
-           rbenv global {{ ruby_version }}
-  sudo: yes
-  sudo_user: "{{ username }}"
-  environment: rbenv_env
+  - name: set the global ruby version to {{ ruby_version }}
+    command: chdir={{ home }}
+             rbenv global {{ ruby_version }}
+    environment: rbenv_env
 
-- name: rehash to pick up changes
-  command: chdir={{ home }}
-           rbenv rehash
-  sudo: yes
-  sudo_user: "{{ username }}"
-  environment: rbenv_env
+  - name: rehash to pick up changes
+    command: chdir={{ home }}
+             rbenv rehash
+    environment: rbenv_env

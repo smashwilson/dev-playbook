@@ -1,18 +1,12 @@
 ---
-- hosts: all
-  remote_user: root
-  vars_files:
-  - vars.yml
-  tasks:
+- include: account.yml tags=account
 
-  - include: account.yml tags=account
+- include: dotfiles.yml tags=account
 
-  - include: dotfiles.yml tags=account
+- include: ruby.yml tags=software,ruby
 
-  - include: ruby.yml tags=software,ruby
+- include: python.yml tags=software,python
 
-  - include: python.yml tags=software,python
+- include: node.yml tags=software,node
 
-  - include: node.yml tags=software,node
-
-  - include: go.yml tags=software,go
+- include: go.yml tags=software,go

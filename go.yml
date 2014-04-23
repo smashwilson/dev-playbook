@@ -1,11 +1,17 @@
 # Install golang.
 ---
-- name: create the directories that go will install into
-  file: path={{ go_archive_dir }} state=directory
+- hosts: all
+  vars_files:
+  - vars.yml
+  remote_user: root
+  tasks:
 
-- name: download the go archive
-  command: wget {{ go_url }} -O {{ go_archive_path }}
-           creates={{ go_archive_path }}
+  - name: create the directories that go will install into
+    file: path={{ go_archive_dir }} state=directory
 
-- name: untar the archive
-  command: tar -C /usr/local -zxf {{ go_archive_path }}
+  - name: download the go archive
+    command: wget {{ go_url }} -O {{ go_archive_path }}
+             creates={{ go_archive_path }}
+
+  - name: untar the archive
+    command: tar -C /usr/local -zxf {{ go_archive_path }}

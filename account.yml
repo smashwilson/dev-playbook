@@ -1,44 +1,50 @@
 # Create a user account on the target machine.
 ---
-- name: ensure a sudo group exists
-  group: name=sudo state=present
+- hosts: all
+  vars_files:
+  - vars.yml
+  remote_user: root
+  tasks:
 
-- name: ensure my account is created
-  user: name={{ username }} state=present
-        shell=/bin/bash append=true groups=sudo
+  - name: ensure a sudo group exists
+    group: name=sudo state=present
 
-- name: install my public key
-  authorized_key: user={{ username }} state=present
-                  key="{{ item }}"
-  with_file:
-  - files/pubkeys/tiger_rsa.pub
+  - name: ensure my account is created
+    user: name={{ username }} state=present
+          shell=/bin/bash append=true groups=sudo
 
-- name: synchronize the known_hosts file.
-  copy: src=~/.ssh/known_hosts dest={{ home }}/.ssh/known_hosts
-        owner={{ username }} group={{ username }} mode=0644
+  - name: install my public key
+    authorized_key: user={{ username }} state=present
+                    key="{{ item }}"
+    with_file:
+    - files/pubkeys/tiger_rsa.pub
 
-# Set up the sudoers file, using visudo to validate.
-# Enable passwordless sudo because (a) we're authenticating with keys so we don't have a password
-# and (b) it's helpful for further automation.
+  - name: synchronize the known_hosts file.
+    copy: src=~/.ssh/known_hosts dest={{ home }}/.ssh/known_hosts
+          owner={{ username }} group={{ username }} mode=0644
 
-- name: ensure users in the sudo group can sudo passwordless
-  lineinfile: "dest=/etc/sudoers state=present
-               regexp='^%sudo' line='%sudo ALL=(ALL) NOPASSWD: ALL'
-               validate='visudo -cf %s'"
+  # Set up the sudoers file, using visudo to validate.
+  # Enable passwordless sudo because (a) we're authenticating with keys so we don't have a password
+  # and (b) it's helpful for further automation.
 
-- name: ensure ssh-agent works through sudo
-  lineinfile: dest=/etc/sudoers state=present
-              regexp='^Defaults env_keep\+\=SSH_AUTH_SOCK'
-              line='Defaults env_keep+=SSH_AUTH_SOCK'
-              validate='visudo -cf %s'
+  - name: ensure users in the sudo group can sudo passwordless
+    lineinfile: "dest=/etc/sudoers state=present
+                 regexp='^%sudo' line='%sudo ALL=(ALL) NOPASSWD: ALL'
+                 validate='visudo -cf %s'"
 
-- name: core apt stuff that should always be there
-  apt: pkg={{ item }} state=installed
-  with_items:
-  - build-essential
-  - libyaml-0-2
-  - libyaml-dev
-  - git
-  - vim
-  - curl
-  - wget
+  - name: ensure ssh-agent works through sudo
+    lineinfile: dest=/etc/sudoers state=present
+                regexp='^Defaults env_keep\+\=SSH_AUTH_SOCK'
+                line='Defaults env_keep+=SSH_AUTH_SOCK'
+                validate='visudo -cf %s'
+
+  - name: core apt stuff that should always be there
+    apt: pkg={{ item }} state=installed
+    with_items:
+    - build-essential
+    - libyaml-0-2
+    - libyaml-dev
+    - git
+    - vim
+    - curl
+    - wget

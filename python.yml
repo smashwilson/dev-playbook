@@ -1,15 +1,21 @@
 # Install Python, pip, and virtualenv.
 ---
-- name: install python from apt
-  apt: pkg=python-dev state=installed
+- hosts: all
+  vars_files:
+  - vars.yml
+  remote_user: root
+  tasks:
 
-- name: install setuptools
-  shell: wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python2.7
-         creates=/usr/local/bin/easy_install
+  - name: install python from apt
+    apt: pkg=python-dev state=installed
 
-- name: install pip
-  shell: curl --show-error --retry 5 https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python2.7
-         creates=/usr/local/bin/pip
+  - name: install setuptools
+    shell: wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python2.7
+           creates=/usr/local/bin/easy_install
 
-- name: install virtualenv
-  pip: name=virtualenv state=present
+  - name: install pip
+    shell: curl --show-error --retry 5 https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python2.7
+           creates=/usr/local/bin/pip
+
+  - name: install virtualenv
+    pip: name=virtualenv state=present
