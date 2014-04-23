@@ -2,7 +2,7 @@
 ---
 username: ash
 github_user: smashwilson
-ruby_version: 2.1.0
+ruby_version: 2.1.1
 go_version: 1.2
 go_arch: linux-amd64
 
