@@ -9,7 +9,9 @@
 
 - name: install my public key
   authorized_key: user={{ username }} state=present
-                  key="{{ lookup('file', 'pubkeys/tiger_rsa.pub') }}"
+                  key={{ item }}
+  with_file:
+  - pubkeys/tiger_rsa.pub
 
 - name: synchronize the known_hosts file.
   copy: src=~/.ssh/known_hosts dest={{ home }}/.ssh/known_hosts
