@@ -11,7 +11,7 @@
   authorized_key: user={{ username }} state=present
                   key={{ item }}
   with_file:
-  - pubkeys/tiger_rsa.pub
+  - files/pubkeys/tiger_rsa.pub
 
 - name: synchronize the known_hosts file.
   copy: src=~/.ssh/known_hosts dest={{ home }}/.ssh/known_hosts
