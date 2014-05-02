@@ -1,6 +1,7 @@
 # Install ruby by way of rbenv.
 ---
-- hosts: all
+- name: ruby
+  hosts: all
   vars_files:
   - vars.yml
   remote_user: root

@@ -1,6 +1,7 @@
 # Create a user account on the target machine.
 ---
-- hosts: all
+- name: account setup
+  hosts: all
   vars_files:
   - vars.yml
   remote_user: root

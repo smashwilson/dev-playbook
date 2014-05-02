@@ -1,6 +1,7 @@
 # Install Python, pip, and virtualenv.
 ---
-- hosts: all
+- name: python
+  hosts: all
   vars_files:
   - vars.yml
   remote_user: root

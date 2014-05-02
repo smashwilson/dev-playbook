@@ -1,6 +1,7 @@
 # Install golang.
 ---
-- hosts: all
+- name: go
+  hosts: all
   vars_files:
   - vars.yml
   remote_user: root
