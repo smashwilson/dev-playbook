@@ -6,6 +6,12 @@
   remote_user: root
   tasks:
 
+  - name: update aptitude cache
+    raw: apt-get update
+
+  - name: install python-apt for ansible
+    raw: apt-get install python-apt
+
   - name: ensure a sudo group exists
     group: name=sudo state=present
 
