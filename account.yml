@@ -22,7 +22,7 @@
 
   - name: install my public key
     authorized_key: user={{ username }} state=present
-                    key={{ item }}
+                    key="{{ item }}"
     with_items: ssh_keys
 
   - name: synchronize the known_hosts file.
