@@ -22,7 +22,8 @@
 
   - name: install my public key
     authorized_key: user={{ username }} state=present
-                    key={{ ssh_keys }}
+                    key={{ item }}
+    with_items: ssh_keys
 
   - name: synchronize the known_hosts file.
     copy: src=~/.ssh/known_hosts dest={{ home }}/.ssh/known_hosts
