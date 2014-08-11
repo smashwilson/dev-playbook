@@ -34,10 +34,6 @@
     git: repo=https://github.com/sstephenson/ruby-build.git
          dest={{ rbenv_root }}/plugins/ruby-build
 
-  - name: install a gemrc
-    copy: src=files/gemrc dest={{ home }}/.gemrc
-          owner={{ username }} group={{ username }} mode=0644
-
   - name: build ruby {{ ruby_version }}
     shell: chdir={{ home }} rbenv install {{ ruby_version }}
            creates={{ rbenv_root }}/versions/{{ ruby_version }}/bin/ruby
