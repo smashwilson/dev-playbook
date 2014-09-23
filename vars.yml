@@ -14,7 +14,7 @@ ssh_keys:
   # racktop
   - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9KcjQJE11DDruU6mzHLQhaBF8SDhjfJCcAPtVgwm4Q1dg5fBqSJ+CtAJKf5EOdQJ5sNWJhoUSwz6TdjhH/f9vlzaLYh8kvsPzUk2kl2yiFgbsz+lVNIvbNw6CzXpxMuhLnQDLtYzyJYCidHAv5dA2REArK4nz1SAAyuBqWpffoIRWibhYkyZ1FPy0nxPPT5OYOF4TvaBiOc0BgJYpl00U/OnMJ2Tb6k4dxByZz8VF1lN+1Se+EwaW/anXBTOrnVHkcr6IUiJiUlDOpVuJMyEBoYEGwO9OcBXLbUldLCS7VMfybUuzHV9Eb3+48Q3/ZfawWsqZ9UbwA5Wb7MhT7ydX smashwilson@gmail.com
 
-ruby_version: 2.1.2
+ruby_version: 2.1.3
 go_version: 1.2
 go_arch: linux-amd64
 
